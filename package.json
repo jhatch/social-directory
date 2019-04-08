@@ -24,7 +24,7 @@
         "data": "People!A2:E",
         "writes": "People!F2:H"
       },
-      "row": [
+      "orderedColumnHeaders": [
         "first",
         "last",
         "source",
