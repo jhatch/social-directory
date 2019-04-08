@@ -1,0 +1,96 @@
+{
+  "name": "social-directory",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha ./lib/*Tests.js"
+  },
+  "author": "John Hatcher",
+  "license": "ISC",
+  "dependencies": {
+    "googleapis": "^37.2.0",
+    "moment": "^2.24.0"
+  },
+  "documentation": {
+    "googleapis-examples": "https://github.com/googleapis/google-api-nodejs-client/tree/master/samples"
+  },
+  "config": {
+    "sheets": {
+      "id": "11TtAui1fy4HXbDaqB_mlHVzv_hdJw5jD8w7c7h05oaY",
+      "ranges": {
+        "data": "People!A2:E",
+        "writes": "People!F2:H"
+      },
+      "row": [
+        "first",
+        "last",
+        "source",
+        "email",
+        "targetFrequency"
+      ],
+      "installed": {
+        "client_id": "164451747151-a2q6iceav90r07d83g7gp3n2q7gg25bp.apps.googleusercontent.com",
+        "project_id": "quickstart-1551573748055",
+        "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+        "token_uri": "https://oauth2.googleapis.com/token",
+        "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+        "client_secret": "hCFQR_ffk5HUDOQGQOoSTlyM",
+        "redirect_uris": [
+          "urn:ietf:wg:oauth:2.0:oob",
+          "http://localhost"
+        ]
+      },
+      "token": {
+        "access_token": "ya29.GlvlBl0RsTtU8uZNOI5P5ErrGPVm5OXB9YfgScGANfBaIxj5qAhYC5N1QPWpWyqzagy4neR3kRBLM6Vxd2fdU0KppVOZSMBbn1i2snGg9Xj_kxRGjTRHDSAWvsrB",
+        "refresh_token": "1/kSncFfEAZy5tgIknvaUhr4T8EW6FvpOTBofUNwBBLO8",
+        "scope": "https://www.googleapis.com/auth/spreadsheets",
+        "token_type": "Bearer",
+        "expiry_date": 1554684728523
+      }
+    },
+    "calendar": {
+      "installed": {
+        "client_id": "164451747151-9fs797qomrppmnol162m7vmi3j9d2ig3.apps.googleusercontent.com",
+        "project_id": "quickstart-1551573748055",
+        "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+        "token_uri": "https://oauth2.googleapis.com/token",
+        "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+        "client_secret": "wEkEgKZxQ5YJ9DJM3LU91mxY",
+        "redirect_uris": [
+          "urn:ietf:wg:oauth:2.0:oob",
+          "http://localhost"
+        ]
+      },
+      "token": {
+        "access_token": "ya29.GlvBBqwvNz7gcHaKeQde66NobEze57SYSuFmic7glFL0Ovez40h6TbH3yvzP8gctEj3VT_U808cuFVe3oq2wTojt7Q1SELxJRHrsIrKxmWVWGauVd-VM38F5r7w9",
+        "refresh_token": "1/EiYDW21SjatyYM-NrY1QbTe9MNdcIF4or7UeXw8besqhGYpAeCmGjNhKGRHzeXMa",
+        "scope": "https://www.googleapis.com/auth/calendar.readonly",
+        "token_type": "Bearer",
+        "expiry_date": 1551577642637
+      }
+    },
+    "gmail": {
+      "installed": {
+        "client_id": "164451747151-oedq4erjucqjjlq0gr47rtgjb70u0e1h.apps.googleusercontent.com",
+        "project_id": "quickstart-1551573748055",
+        "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+        "token_uri": "https://oauth2.googleapis.com/token",
+        "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+        "client_secret": "aZOVmOJt5UESnTdfVYWW51pk",
+        "redirect_uris": ["urn:ietf:wg:oauth:2.0:oob", "http://localhost"]
+      },
+      "token": {
+        "access_token": "ya29.GlvBBjFQYsijGVwWXWBiFFrRSvHgqrC93nj_OObVIy4nzXLc3UnsVvi8Q5aougjL3-C4w2fnXR8RtdWUZ4S5oBy7ZunvJ_hnuIE5oAnC_F0YoC3cO5xTvdjTfrhv",
+        "refresh_token": "1/IigfO5OrSSunDyA1cjx8OC7-5jboBzQi1WqGax8li_I",
+        "scope": "https://www.googleapis.com/auth/gmail.send",
+        "token_type": "Bearer",
+        "expiry_date": 1551583847249
+      }
+    }
+  },
+  "devDependencies": {
+    "chai": "^4.2.0",
+    "mocha": "^6.0.2"
+  }
+}
