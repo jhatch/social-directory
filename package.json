@@ -99,6 +99,7 @@
     "eslint": "^5.16.0",
     "eslint-config-airbnb-base": "^13.1.0",
     "eslint-plugin-import": "^2.16.0",
-    "mocha": "^6.0.2"
+    "mocha": "^6.0.2",
+    "sinon": "^7.3.1"
   }
 }

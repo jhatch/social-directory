@@ -16,14 +16,13 @@ exports.handler = async () => {
   try {
     // TODO: do them in parallel
     await sheet.load(config.sheets.id, config.sheets.ranges.data);
-    await calendar.load(from, to);
+    await calendar.load(from.toDate(), to.toDate());
 
     const scoreData = sheet.rows.map((person) => {
       /* eslint no-param-reassign:0 */
       person.score = calendar.computeFrequencyScore(person.email, person.targetFrequency);
       person.lastSeen = calendar.findLastEventDate(person.email);
-
-      return [person.score, person.lastSeen, nowTimestamp];
+      return [person.score, person.lastSeen ? `${moment().diff(moment(person.lastSeen), 'months')} months ago` : '', nowTimestamp];
     });
 
     await sheet.update(config.sheets.id, config.sheets.ranges.writes, scoreData);
@@ -49,3 +48,5 @@ exports.handler = async () => {
     throw error;
   }
 };
+
+exports.handler();
