@@ -12,7 +12,7 @@ const nowTimestamp = moment().format('YYYY-MM-DD');
 const from = moment().subtract(12, 'months'); 
 const to = moment().add(12, 'months'); 
 
-(async () => {
+exports.handler = async function(event, context, callback) {   
 	try {
 		// TODO: do them in parallel
 		await sheet.load(config.sheets.id, config.sheets.ranges.data);
@@ -47,4 +47,4 @@ const to = moment().add(12, 'months');
 	  await gmail.send(`[Social Directory] ${new Date()} ERROR!`, `<pre>${error.stack}</pre>`);
 		throw error;
 	}
-})();
+};
