@@ -40,6 +40,7 @@ exports.handler = async function(event, context, callback) {
 		})
 
 		html += '</table>';
+		html += '<a href="https://docs.google.com/spreadsheets/d/11TtAui1fy4HXbDaqB_mlHVzv_hdJw5jD8w7c7h05oaY">Full Directory"</a>';
 
 		await gmail.send(`[Social Directory] ${new Date()}`, html);
 	}
