@@ -4,16 +4,16 @@ const GoogleCalendar = require('./lib/GoogleCalendar');
 const GoogleMail = require('./lib/GoogleMail');
 const config = require('./package.json').config;
 
+const sheet = new GoogleSheet(config.sheets);
+const calendar = new GoogleCalendar(config.calendar);
+const gmail = new GoogleMail(config.gmail);
+
+const nowTimestamp = moment().format('YYYY-MM-DD');
+const from = moment().subtract(12, 'months'); 
+const to = moment().add(12, 'months'); 
+
 (async () => {
 	try {
-		const sheet = await new GoogleSheet(config.sheets);
-		const calendar = new GoogleCalendar(config.calendar);
-		const gmail = new GoogleMail(config.gmail);
-
-		const nowTimestamp = moment().format('YYYY-MM-DD');
-		const from = moment().subtract(12, 'months'); 
-		const to = moment().add(12, 'months'); 
-
 		// TODO: do them in parallel
 		await sheet.load(config.sheets.id, config.sheets.ranges.data);
 		await calendar.load(from, to);
@@ -44,8 +44,7 @@ const config = require('./package.json').config;
 		await gmail.send(`[Social Directory] ${new Date()}`, html);
 	}
 	catch(error) {
-		console.log("FUCK", error);
-		// gmail.send(config.email, error);
+	  await gmail.send(`[Social Directory] ${new Date()} ERROR!`, `<pre>${error.stack}</pre>`);
 		throw error;
 	}
 })();
