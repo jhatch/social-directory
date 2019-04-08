@@ -32,14 +32,14 @@ exports.handler = async function(event, context, callback) {
 			.filter(person => person.score === 0)
 			.splice(0, 10);
 
-		let html = '<ol>';
+		let html = '<table>';
 
-		html += '<li><span>Name</span><span>Score</span><span>Last Seen</span></li>'
+		html += '<th><td>Name</td><td>Score</td><td>Last Seen</td></th>'
 		winners.forEach(person => {
-			html += `<li><span>${person.first} ${person.last}</span><span>${person.score}</span><span>${person.lastSeen}</span></li>`;
+			html += `<tr><td>${person.first} ${person.last}</td><td>${person.score}</td><td>${person.lastSeen}</td></tr>`;
 		})
 
-		html += '</ol>';
+		html += '</table>';
 
 		await gmail.send(`[Social Directory] ${new Date()}`, html);
 	}
@@ -48,3 +48,5 @@ exports.handler = async function(event, context, callback) {
 		throw error;
 	}
 };
+
+exports.handler();
