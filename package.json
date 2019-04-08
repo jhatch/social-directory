@@ -4,13 +4,15 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "mocha ./lib/*Tests.js"
+    "test": "mocha ./lib/*.tests.js",
+    "lint": "./node_modules/.bin/eslint *.js lib/*.js"
   },
   "author": "John Hatcher",
   "license": "ISC",
   "dependencies": {
     "googleapis": "^37.2.0",
-    "moment": "^2.24.0"
+    "moment": "^2.24.0",
+    "mustache": "^3.0.1"
   },
   "documentation": {
     "googleapis-examples": "https://github.com/googleapis/google-api-nodejs-client/tree/master/samples"
@@ -78,7 +80,10 @@
         "token_uri": "https://oauth2.googleapis.com/token",
         "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
         "client_secret": "aZOVmOJt5UESnTdfVYWW51pk",
-        "redirect_uris": ["urn:ietf:wg:oauth:2.0:oob", "http://localhost"]
+        "redirect_uris": [
+          "urn:ietf:wg:oauth:2.0:oob",
+          "http://localhost"
+        ]
       },
       "token": {
         "access_token": "ya29.GlvBBjFQYsijGVwWXWBiFFrRSvHgqrC93nj_OObVIy4nzXLc3UnsVvi8Q5aougjL3-C4w2fnXR8RtdWUZ4S5oBy7ZunvJ_hnuIE5oAnC_F0YoC3cO5xTvdjTfrhv",
@@ -91,6 +96,9 @@
   },
   "devDependencies": {
     "chai": "^4.2.0",
+    "eslint": "^5.16.0",
+    "eslint-config-airbnb-base": "^13.1.0",
+    "eslint-plugin-import": "^2.16.0",
     "mocha": "^6.0.2"
   }
 }
