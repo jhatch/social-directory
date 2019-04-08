@@ -48,5 +48,3 @@ exports.handler = async function(event, context, callback) {
 		throw error;
 	}
 };
-
-exports.handler();
