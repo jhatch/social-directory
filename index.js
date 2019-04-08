@@ -3,10 +3,11 @@ const GoogleSheet = require('./lib/GoogleSheet');
 const GoogleCalendar = require('./lib/GoogleCalendar');
 const GoogleMail = require('./lib/GoogleMail');
 const { config } = require('./package.json');
+const credentials = require('./credentials.json');
 
-const sheet = new GoogleSheet(config.sheets);
-const calendar = new GoogleCalendar(config.calendar);
-const gmail = new GoogleMail(config.gmail);
+const sheet = new GoogleSheet(credentials.sheets, config.sheets);
+const calendar = new GoogleCalendar(credentials.calendar);
+const gmail = new GoogleMail(credentials.gmail);
 
 const nowTimestamp = moment().format('YYYY-MM-DD');
 const from = moment().subtract(12, 'months');
@@ -14,24 +15,37 @@ const to = moment().add(12, 'months');
 
 exports.handler = async () => {
   try {
+    // 0. load our social directory spreadsheet and calendar events
     // TODO: do them in parallel
     await sheet.load(config.sheets.id, config.sheets.ranges.data);
     await calendar.load(from.toDate(), to.toDate());
 
-    const scoreData = sheet.rows.map((person) => {
-      /* eslint no-param-reassign:0 */
-      person.score = calendar.computeFrequencyScore(person.email, person.targetFrequency);
-      person.lastSeen = calendar.findLastEventDate(person.email);
-      return [person.score, person.lastSeen ? `${moment().diff(moment(person.lastSeen), 'months')} months ago` : '', nowTimestamp];
-    });
+    // 1. process each person: compute score, find last-seen-date
+    const sheetsData = [];
 
-    await sheet.update(config.sheets.id, config.sheets.ranges.writes, scoreData);
+    for (let i = 0; i < sheet.rows.length; i++) {
+      const person = sheet.rows[i];
+      const score = calendar.computeFrequencyScore(person.email, person.targetFrequency);
+      const lastSeenDate = calendar.findLastEventDate(person.email);
 
+      person.score = score;
+      sheetsData.push([
+        score,
+        lastSeenDate ? `${moment().diff(moment(lastSeenDate), 'months')} months ago` : 'Never',
+        nowTimestamp,
+      ]);
+    }
+
+    // 2. record in our spreadsheet: [current score, last-seen-date, timestamp]
+    await sheet.update(config.sheets.id, config.sheets.ranges.writes, sheetsData);
+
+    // 3. decide who you most need to schedule; for the email digest
     const winners = sheet.rows
       .filter(person => !calendar.isScheduled(person.email))
       .filter(person => person.score === 0)
       .splice(0, 10);
 
+    // 4. generate/send the email digest
     let html = '<table>';
 
     html += '<th><td>Name</td><td>Score</td><td>Last Seen</td></th>';
@@ -44,9 +58,7 @@ exports.handler = async () => {
 
     await gmail.send(`[Social Directory] ${new Date()}`, html);
   } catch (error) {
-    await gmail.send(`[Social Directory] ${new Date()} ERROR!`, `<pre>${error.stack}</pre>`);
+    // await gmail.send(`[Social Directory] ${new Date()} ERROR!`, `<pre>${error.stack}</pre>`);
     throw error;
   }
 };
-
-exports.handler();
