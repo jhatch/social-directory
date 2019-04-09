@@ -5,9 +5,18 @@ const GoogleMail = require('./lib/GoogleMail');
 const { config } = require('./package.json');
 const credentials = require('./credentials.json');
 
-const sheet = new GoogleSheet(credentials.sheets, config.sheets);
-const calendar = new GoogleCalendar(credentials.calendar);
-const gmail = new GoogleMail(credentials.gmail);
+const sheet = new GoogleSheet({
+  oauth: credentials.oauth,
+  token: credentials.sheets.token,
+}, config.sheets);
+const calendar = new GoogleCalendar({
+  oauth: credentials.oauth,
+  token: credentials.calendar.token,
+});
+const gmail = new GoogleMail({
+  oauth: credentials.oauth,
+  token: credentials.gmail.token,
+});
 
 const nowTimestamp = moment().format('YYYY-MM-DD');
 const from = moment().subtract(12, 'months');

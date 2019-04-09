@@ -1,7 +1,12 @@
-const GoogleSheet = require('./lib/GoogleSheet');
-const { config } = require('./package.json');
+const GoogleAPI = require('./lib/GoogleAPI');
+const credentials = require('./credentials.json');
 
-const google = new GoogleSheet(config.sheets);
+const google = new GoogleAPI({ oauth: credentials.oauth });
 
-google.generateAuthUrl(['https://www.googleapis.com/auth/spreadsheets']);
-google.generateToken('4/JgEeSkzEYARfJltjiu-aObT9hoTRKkKprnc7TTUre2SwE9knrYo5eII');
+// scopes:
+// https://www.googleapis.com/auth/spreadsheets
+// https://www.googleapis.com/auth/calendar.readonly
+// https://www.googleapis.com/auth/gmail.send
+
+google.generateAuthUrl(['']); // <-- scope
+google.generateToken(''); // <-- token from first step
