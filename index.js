@@ -1,4 +1,6 @@
 const moment = require('moment');
+const doT = require('dot');
+const weeklyDigest = require('./emails/weeklyDigest');
 const GoogleSheet = require('./lib/GoogleSheet');
 const GoogleCalendar = require('./lib/GoogleCalendar');
 const GoogleMail = require('./lib/GoogleMail');
@@ -65,11 +67,13 @@ exports.handler = async () => {
       const person = sheet.rows[i];
       const score = calendar.computeFrequencyScore(person.email, person.targetFrequency);
       const lastSeenDate = calendar.findLastEventDate(person.email);
+      const lastSeenPhrase = lastSeenDate ? `${moment().diff(moment(lastSeenDate), 'months')} months ago` : 'Never :(';
 
       person.score = score;
+      person.lastSeenPhrase = lastSeenPhrase;
       sheetsData.push([
         score,
-        lastSeenDate ? `${moment().diff(moment(lastSeenDate), 'months')} months ago` : 'Never',
+        lastSeenPhrase,
         nowTimestamp,
       ]);
     }
@@ -79,20 +83,12 @@ exports.handler = async () => {
 
     // 3. decide who you most need to schedule; for the email digest
     const winners = sheet.rows
-      .filter(person => !calendar.isScheduled(person.email))
-      .filter(person => person.score === 0)
-      .splice(0, 10);
+      .filter(person => !calendar.isScheduled(person.email));
+      // .filter(person => person.score === 0)
+      // .splice(0, 50);
 
     // 4. generate/send the email digest
-    let html = '<table>';
-
-    html += '<th><td>Name</td><td>Score</td><td>Last Seen</td></th>';
-    winners.forEach((person) => {
-      html += `<tr><td>${person.first} ${person.last}</td><td>${person.score}</td><td>${person.lastSeen}</td></tr>`;
-    });
-
-    html += '</table>';
-    html += '<a href="https://docs.google.com/spreadsheets/d/11TtAui1fy4HXbDaqB_mlHVzv_hdJw5jD8w7c7h05oaY">Full Directory"</a>';
+    const html = doT.template(weeklyDigest)({ winners });
 
     await gmail.send(`[Social Directory] ${new Date()}`, html);
   } catch (error) {
