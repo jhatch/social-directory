@@ -5,17 +5,46 @@ const GoogleMail = require('./lib/GoogleMail');
 const { config } = require('./package.json');
 const credentials = require('./credentials.json');
 
+const oauth = {
+  client_id: process.env.client_id || credentials.oauth.client_id,
+  client_secret: process.env.client_secret || credentials.oauth.client_secret,
+  redirect_uris: process.env.redirect_uris || credentials.oauth.redirect_uris,
+};
+const sheetsToken = {
+  access_token: process.env.sheets_access_token || credentials.sheets.token.access_token,
+  refresh_token: process.env.sheets_refresh_token || credentials.sheets.token.refresh_token,
+  scope: process.env.sheets_scope || credentials.sheets.token.scope,
+  token_type: process.env.sheets_token_type || credentials.sheets.token.token_type,
+  expiry_date: process.env.sheets_expiry_date || credentials.sheets.token.expiry_date,
+};
+const calendarToken = {
+  access_token: process.env.calendar_access_token || credentials.calendar.token.access_token,
+  refresh_token: process.env.calendar_refresh_token || credentials.calendar.token.refresh_token,
+  scope: process.env.calendar_scope || credentials.calendar.token.scope,
+  token_type: process.env.calendar_token_type || credentials.calendar.token.token_type,
+  expiry_date: process.env.calendar_expiry_date || credentials.calendar.token.expiry_date,
+};
+const gmailToken = {
+  access_token: process.env.gmail_access_token || credentials.gmail.token.access_token,
+  refresh_token: process.env.gmail_refresh_token || credentials.gmail.token.refresh_token,
+  scope: process.env.gmail_scope || credentials.gmail.token.scope,
+  token_type: process.env.gmail_token_type || credentials.gmail.token.token_type,
+  expiry_date: process.env.gmail_expiry_date || credentials.gmail.token.expiry_date,
+};
+
 const sheet = new GoogleSheet({
-  oauth: credentials.oauth,
-  token: credentials.sheets.token,
+  oauth,
+  token: sheetsToken,
 }, config.sheets);
+
 const calendar = new GoogleCalendar({
-  oauth: credentials.oauth,
-  token: credentials.calendar.token,
+  oauth,
+  token: calendarToken,
 });
+
 const gmail = new GoogleMail({
-  oauth: credentials.oauth,
-  token: credentials.gmail.token,
+  oauth,
+  token: gmailToken,
 });
 
 const nowTimestamp = moment().format('YYYY-MM-DD');
