@@ -83,7 +83,22 @@ exports.handler = async () => {
 
     // 3. decide who you most need to schedule; for the email digest
     const winners = sheet.rows
-      .filter(person => !calendar.isScheduled(person.email));
+      .filter(person => !calendar.isScheduled(person.email))
+      .sort((p1, p2) => {
+        if (p1.score < p2.score) {
+          return 1;
+        }
+
+        if (p1.score > p2.score) {
+          return -1;
+        }
+
+        if (p1.targetFrequency < p2.targetFrequency) {
+          return 1;
+        }
+
+        return -1;
+      });
       // .filter(person => person.score === 0)
       // .splice(0, 50);
 
