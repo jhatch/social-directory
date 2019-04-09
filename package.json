@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "mocha ./lib/*.tests.js",
+    "test": "nyc mocha ./lib/*.tests.js",
     "lint": "./node_modules/.bin/eslint *.js lib/*.js",
     "start": "node local.js"
   },
@@ -41,6 +41,7 @@
     "eslint-config-airbnb-base": "^13.1.0",
     "eslint-plugin-import": "^2.16.0",
     "mocha": "^6.0.2",
+    "nyc": "^13.3.0",
     "sinon": "^7.3.1"
   }
 }
