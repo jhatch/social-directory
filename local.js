@@ -1,3 +1,7 @@
-const { handler } = require('./index.js');
+const handlers = require('./index.js');
 
-handler();
+if (typeof handlers[process.argv[2]] === 'function') {
+  handlers[process.argv[2]]();
+} else {
+  console.error('Unknown Handler!'); /* eslint no-console: off */
+}

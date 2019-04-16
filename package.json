@@ -6,7 +6,7 @@
   "scripts": {
     "test": "nyc mocha ./lib/*.tests.js",
     "lint": "./node_modules/.bin/eslint *.js lib/*.js",
-    "start": "node local.js"
+    "start": "node local.js timeSinceLastSeenHandler"
   },
   "author": "John Hatcher",
   "license": "ISC",

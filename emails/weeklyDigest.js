@@ -11,7 +11,7 @@ module.exports = `
     {{ const person = it.winners[i]; }}
     <tr>
       <td width="250">{{= person.first}} {{= person.last}}</td>
-      <td width="80">{{= parseInt(person.score * 100) }}%</td>
+      <td width="80">{{= person.score ? parseInt(person.score * 100) + '%' : '-' }}</td>
       <td width="120">{{= person.lastSeenPhrase }}</td>
       <td width="120">{{= person.targetFrequency }}</td>
     </tr>
