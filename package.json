@@ -4,8 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "nyc mocha ./lib/*.tests.js",
-    "lint": "./node_modules/.bin/eslint *.js lib/*.js",
+    "lint": "./node_modules/.bin/eslint *.js emails/*.js",
     "start": "node local.js timeSinceLastSeenHandler"
   },
   "author": "John Hatcher",
@@ -28,18 +27,13 @@
   },
   "dependencies": {
     "dot": "1.1.2",
-    "googleapis": "37.2.0",
-    "moment": "2.24.0",
-    "mustache": "3.0.1"
+    "google-clients": "https://github.com/jhatch/google-clients.git",
+    "moment": "2.24.0"
   },
   "devDependencies": {
-    "chai": "4.2.0",
     "eslint": "5.16.0",
     "eslint-config-airbnb-base": "13.1.0",
-    "eslint-plugin-import": "2.16.0",
-    "mocha": "6.0.2",
-    "nyc": "13.3.0",
-    "sinon": "7.3.1"
+    "eslint-plugin-import": "2.16.0"
   },
   "documentation": {
     "googleapis-examples": "https://github.com/googleapis/google-api-nodejs-client/tree/master/samples"

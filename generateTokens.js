@@ -1,4 +1,4 @@
-const GoogleAPI = require('./lib/GoogleAPI');
+const { GoogleAPI } = require('google-clients');
 const credentials = require('./credentials.json');
 
 const google = new GoogleAPI({ oauth: credentials.oauth });

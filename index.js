@@ -1,9 +1,11 @@
 const moment = require('moment');
 const doT = require('dot');
+const {
+  GoogleSheet,
+  GoogleCalendar,
+  GoogleMail,
+} = require('google-clients');
 const weeklyDigest = require('./emails/weeklyDigest');
-const GoogleSheet = require('./lib/GoogleSheet');
-const GoogleCalendar = require('./lib/GoogleCalendar');
-const GoogleMail = require('./lib/GoogleMail');
 const { config } = require('./package.json');
 const credentials = require('./credentials.json');
 
