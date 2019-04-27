@@ -24,7 +24,7 @@ module.exports = `
       <td width="80">{{= person.score !== -1 ? (person.score * 100).toPrecision(3) + '%' : '-' }}</td>
       <td width="120">{{= person.targetFrequency }}</td>
       <td width="120">{{= person.lastEvent.phrase }}</td>
-      <td width="250">{{= person.lastEvent.summary }}</td>
+      <td width="250"><a href="{{= person.lastEvent.htmlLink }}">{{= person.lastEvent.summary }}</a></td>
     </tr>
   {{ } }}
 
@@ -49,7 +49,7 @@ module.exports = `
       <td width="80">{{= person.score !== -1 ? (person.score * 100).toPrecision(3) + '%' : '-' }}</td>
       <td width="120">{{= person.targetFrequency }}</td>
       <td width="120">{{= it.moment(person.nextEvent.date).format('MMM D, YYYY') }}</td>
-      <td width="250">{{= person.nextEvent.summary }}</td>
+      <td width="250"><a href="{{= person.nextEvent.htmlLink }}">{{= person.nextEvent.summary }}</a></td>
     </tr>
   {{ } }}
 

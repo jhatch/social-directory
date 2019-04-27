@@ -71,6 +71,11 @@ exports.timeSinceLastSeenHandler = async () => {
       const person = sheet.rows[i];
 
       person.lastEvent = calendar.getLastEvent(person.email);
+
+      if (person.lastEvent) {
+        person.lastEvent.phrase = `${moment().diff(moment(person.lastEvent.date), 'weeks')} weeks ago`;
+      }
+
       person.score = calendar.computeLastSeenScore(person.email, person.targetFrequency);
 
       sheetsData.push([
@@ -86,11 +91,6 @@ exports.timeSinceLastSeenHandler = async () => {
     // 3. decide who you most need to schedule; for the email digest
     const notScheduled = sheet.rows
       .filter(person => !calendar.isScheduled(person.email))
-      .map((person) => {
-        /* eslint no-param-reassign: Off */
-        person.lastEvent = calendar.getLastEvent(person.email);
-        return person;
-      })
       .sort((p1, p2) => {
         if (p1.score < p2.score) {
           return 1;
@@ -114,7 +114,7 @@ exports.timeSinceLastSeenHandler = async () => {
       .filter(person => calendar.isScheduled(person.email))
       .map((person) => {
         /* eslint no-param-reassign: Off */
-        person.nextEvent = calendar.getScheduledEvent(person.email);
+        person.nextEvent = calendar.getNextEvent(person.email);
         return person;
       });
 
