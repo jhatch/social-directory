@@ -54,7 +54,6 @@ const gmail = new GoogleMail({
   token: gmailToken,
 });
 
-const nowTimestamp = moment().format('YYYY-MM-DD');
 const from = moment().subtract(12, 'months');
 const to = moment().add(12, 'months');
 
@@ -70,17 +69,14 @@ exports.timeSinceLastSeenHandler = async () => {
 
     for (let i = 0; i < sheet.rows.length; i++) {
       const person = sheet.rows[i];
-      const lastSeenDate = calendar.findLastEventDate(person.email);
-      const lastSeenPhrase = lastSeenDate ? `${moment().diff(moment(lastSeenDate), 'months')} months ago` : 'Never :(';
-      const score = calendar.computeLastSeenScore(person.email, person.targetFrequency);
 
-      person.score = score;
-      person.lastSeenPhrase = lastSeenPhrase;
+      person.lastEvent = calendar.getLastEvent(person.email);
+      person.score = calendar.computeLastSeenScore(person.email, person.targetFrequency);
 
       sheetsData.push([
-        score,
-        lastSeenPhrase,
-        nowTimestamp,
+        person.score,
+        person.lastEvent ? person.lastEvent.phrase : 'No record.',
+        person.nowTimestamp,
       ]);
     }
 
@@ -88,8 +84,13 @@ exports.timeSinceLastSeenHandler = async () => {
     await sheet.update(config.sheets.id, config.sheets.ranges.writes, sheetsData);
 
     // 3. decide who you most need to schedule; for the email digest
-    const winners = sheet.rows
+    const notScheduled = sheet.rows
       .filter(person => !calendar.isScheduled(person.email))
+      .map((person) => {
+        /* eslint no-param-reassign: Off */
+        person.lastEvent = calendar.getLastEvent(person.email);
+        return person;
+      })
       .sort((p1, p2) => {
         if (p1.score < p2.score) {
           return 1;
@@ -105,71 +106,38 @@ exports.timeSinceLastSeenHandler = async () => {
 
         return -1;
       });
-      // .filter(person => person.score === 0)
-      // .splice(0, 50);
 
-    // 4. generate/send the email digest
-    const html = doT.template(weeklyDigest)({ winners });
+    const active = notScheduled.filter(person => person.score !== -1);
+    const inactive = notScheduled.filter(person => person.score === -1);
 
-    await gmail.send(`[Social Directory] ${new Date()}`, html);
-  } catch (error) {
-    // await gmail.send(`[Social Directory] ${new Date()} ERROR!`, `<pre>${error.stack}</pre>`);
-    throw error;
-  }
-};
-
-exports.averageFrequencyHandler = async () => {
-  try {
-    // 0. load our social directory spreadsheet and calendar events
-    // TODO: do them in parallel
-    await sheet.load(config.sheets.id, config.sheets.ranges.data);
-    await calendar.load(from.toDate(), to.toDate());
-
-    // 1. process each person: compute score, find last-seen-date
-    const sheetsData = [];
-
-    for (let i = 0; i < sheet.rows.length; i++) {
-      const person = sheet.rows[i];
-      const score = calendar.computeFrequencyScore(person.email, person.targetFrequency);
-      const lastSeenDate = calendar.findLastEventDate(person.email);
-      const lastSeenPhrase = lastSeenDate ? `${moment().diff(moment(lastSeenDate), 'months')} months ago` : 'Never :(';
-
-      person.score = score;
-      person.lastSeenPhrase = lastSeenPhrase;
-
-      sheetsData.push([
-        score,
-        lastSeenPhrase,
-        nowTimestamp,
-      ]);
-    }
-
-    // 2. record in our spreadsheet: [current score, last-seen-date, timestamp]
-    await sheet.update(config.sheets.id, config.sheets.ranges.writes, sheetsData);
-
-    // 3. decide who you most need to schedule; for the email digest
-    const winners = sheet.rows
-      .filter(person => !calendar.isScheduled(person.email))
-      .sort((p1, p2) => {
-        if (p1.score < p2.score) {
-          return 1;
-        }
-
-        if (p1.score > p2.score) {
-          return -1;
-        }
-
-        if (p1.targetFrequency < p2.targetFrequency) {
-          return 1;
-        }
-
-        return -1;
+    const scheduled = sheet.rows
+      .filter(person => calendar.isScheduled(person.email))
+      .map((person) => {
+        /* eslint no-param-reassign: Off */
+        person.nextEvent = calendar.getScheduledEvent(person.email);
+        return person;
       });
-      // .filter(person => person.score === 0)
-      // .splice(0, 50);
+
+    // 4. count how many events you had in the past 30 days
+    const recentlySeen = sheet.rows.filter((person) => {
+      if (!person.lastEvent) {
+        return false;
+      }
+
+      const days = moment().diff(moment(person.lastEvent.date), 'days');
+
+      return (days <= 30 && days > 0);
+    });
 
     // 4. generate/send the email digest
-    const html = doT.template(weeklyDigest)({ winners });
+    const html = doT.template(weeklyDigest)({
+      active,
+      inactive,
+      scheduled,
+      upcomingCount: scheduled.length,
+      recentlyCount: recentlySeen.length,
+      moment,
+    });
 
     await gmail.send(`[Social Directory] ${new Date()}`, html);
   } catch (error) {
