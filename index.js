@@ -136,7 +136,7 @@ exports.timeSinceLastSeenHandler = async () => {
       scheduled,
       upcomingCount: scheduled.length,
       recentlyCount: recentlySeen.length,
-      moment
+      moment,
     });
 
     await gmail.send(`[Social Directory] ${new Date()}`, html);
