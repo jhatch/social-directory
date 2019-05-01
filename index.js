@@ -136,12 +136,12 @@ exports.timeSinceLastSeenHandler = async () => {
       scheduled,
       upcomingCount: scheduled.length,
       recentlyCount: recentlySeen.length,
-      moment,
+      moment
     });
 
     await gmail.send(`[Social Directory] ${new Date()}`, html);
   } catch (error) {
-    // await gmail.send(`[Social Directory] ${new Date()} ERROR!`, `<pre>${error.stack}</pre>`);
+    await gmail.send(`[Social Directory] ${new Date()} ERROR!`, `<pre>${error.stack}</pre>`);
     throw error;
   }
 };
