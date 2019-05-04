@@ -54,10 +54,23 @@ const gmail = new GoogleMail({
   token: gmailToken,
 });
 
+const me = {
+  name: 'John Hatcher',
+  email: 'john.h.hatcher@gmail.com',
+};
+
 const from = moment().subtract(12, 'months');
 const to = moment().add(12, 'months');
 
 exports.timeSinceLastSeenHandler = async () => {
+  const contents = {
+    subject: `[Social Directory] ${new Date()}`,
+  };
+
+  const errorContents = {
+    subject: `[Social Directory] ${new Date()} ERROR!`,
+  };
+
   try {
     // 0. load our social directory spreadsheet and calendar events
     // TODO: do them in parallel
@@ -130,7 +143,7 @@ exports.timeSinceLastSeenHandler = async () => {
     });
 
     // 4. generate/send the email digest
-    const html = doT.template(weeklyDigest)({
+    contents.html = doT.template(weeklyDigest)({
       active,
       inactive,
       scheduled,
@@ -139,9 +152,10 @@ exports.timeSinceLastSeenHandler = async () => {
       moment,
     });
 
-    await gmail.send(`[Social Directory] ${new Date()}`, html);
+    await gmail.send(me, me, contents);
   } catch (error) {
-    await gmail.send(`[Social Directory] ${new Date()} ERROR!`, `<pre>${error.stack}</pre>`);
+    errorContents.html = `<pre>${error.stack}</pre>`;
+    await gmail.send(me, me, errorContents);
     throw error;
   }
 };
