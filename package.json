@@ -26,9 +26,9 @@
     }
   },
   "dependencies": {
-    "dot": "1.1.2",
-    "google-clients": "https://github.com/jhatch/google-clients.git",
-    "moment": "2.24.0"
+    "dot": "^1.1.2",
+    "google-clients": "git+https://github.com/jhatch/google-clients.git",
+    "moment": "^2.24.0"
   },
   "devDependencies": {
     "eslint": "5.16.0",
