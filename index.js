@@ -59,16 +59,18 @@ const me = {
   email: 'john.h.hatcher@gmail.com',
 };
 
-const from = moment().subtract(12, 'months');
-const to = moment().add(12, 'months');
+const format = 'MMM Do, YYYY';
+const now = moment();
+const from = moment().subtract(6, 'months');
+const to = moment().add(6, 'months');
 
 exports.timeSinceLastSeenHandler = async () => {
   const contents = {
-    subject: `[Social Directory] ${new Date()}`,
+    subject: `[Social Directory] ${now.format(format)}`,
   };
 
   const errorContents = {
-    subject: `[Social Directory] ${new Date()} ERROR!`,
+    subject: `[Social Directory] ${now.format(format)} ERROR!`,
   };
 
   try {
@@ -89,6 +91,7 @@ exports.timeSinceLastSeenHandler = async () => {
         person.lastEvent.phrase = `${moment().diff(moment(person.lastEvent.date), 'weeks')} weeks ago`;
       }
 
+      person.nowTimestamp = now.format(format);
       person.score = calendar.computeLastSeenScore(person.email, person.targetFrequency);
 
       sheetsData.push([
